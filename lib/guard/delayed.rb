@@ -14,8 +14,10 @@ module Guard
     # :monitor            Start monitor process.
     # :sleep-delay N      Amount of time to sleep in seconds when no jobs are found
     # :prefix NAME        String to be prefixed to worker process names
+    # :command            Delayed_job script location, default is script/delayed_job
 
     def initialize(watchers = [], options = {})
+      @command = options.delete(:command) || 'script/delayed_job'
       @options = options
       super(watchers, options)
     end
@@ -66,8 +68,7 @@ module Guard
     end
 
     def cmd
-      command = "script/delayed_job"
-      command = "export RAILS_ENV=#{@options[:environment]}; #{command}" if @options[:environment]
+      command = "export RAILS_ENV=#{@options[:environment]}; #{@command}" if @options[:environment]
       command
     end
 
